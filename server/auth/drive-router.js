@@ -1,7 +1,7 @@
 var express = require('express');
 var google = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
-var secrets = require('./secrets/drive.secret');
+var secrets = require('../secrets/drive.secret');
 var authHelper = require('./auth-helper.js');
 var oauth2Client = new OAuth2(secrets.CLIENT_ID, secrets.CLIENT_SECRET, secrets.REDIRECT_URL);
 

@@ -1,6 +1,6 @@
 var google = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
-var secrets = require('../../auth/secrets/drive.secret');
+var secrets = require('../../secrets/drive.secret');
 var Promise = require('bluebird');
 var drive = google.drive('v2');
 var oauth2Client = new OAuth2(secrets.CLIENT_ID, secrets.CLIENT_SECRET, secrets.REDIRECT_URL);

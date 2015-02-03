@@ -6,6 +6,7 @@ var gulp = require('gulp');
 var browserify = require('gulp-browserify');
 var concat = require('gulp-concat');
 var jshint = require('gulp-jshint');
+var shell = require('gulp-shell');
 // var clean = require('gulp-clean')
 
 gulp.task('lint', function() {
@@ -51,18 +52,6 @@ gulp.task('copy', function() {
       // No variations are putting the bower component files into the right place right now - moved manually
 });
 
-gulp.task('default', ['lint', 'browserify', 'copy']);
-
-gulp.task('watch', function() {
-  gulp.watch('public/**/*.*', ['default']);
-});
-
-
-
-
-
-
-
 gulp.task('browserify-stock', function(){
   gulp.src('public/js/main-stock.js')
     .pipe(browserify({transform: 'reactify'}))
@@ -85,5 +74,16 @@ gulp.task('watch-stock', function() {
   gulp.watch('public/**/*.*', ['stock']);
 });
 
+
+gulp.task('run', shell.task([
+  'cd server && nodemon app.js'
+]));
+
+
+gulp.task('default', ['lint', 'browserify', 'copy', 'watch', 'run']);
+
+gulp.task('watch', function() {
+  gulp.watch('public/**/*.*', ['default']);
+});
 
 

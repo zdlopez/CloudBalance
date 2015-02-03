@@ -1,5 +1,5 @@
 var jwt = require('jwt-simple');
-var jwtSecret = require('./secrets/jwt.secret');
+var jwtSecret = require('../secrets/jwt.secret');
 
 var tokenSaverMaker = function tokenSaverMaker (thirdparty, token, redirectUrl) {
   return  '<!DOCTYPE html>' +
