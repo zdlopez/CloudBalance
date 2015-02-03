@@ -24,3 +24,7 @@ Please follow the steps outlined in the [Build Process Wiki](https://github.com/
 
 View the [project roadmap](https://github.com/CloudBalance/CloudBalance/wiki/MVP-Product-Vision), and our [long term product vision](https://github.com/CloudBalance/CloudBalance/wiki/Longterm-Product-Vision).
 
+## Contributing
+
+See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for contribution guidelines.
+
