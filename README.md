@@ -1,12 +1,12 @@
-# Project Name
+# Cloud Rebalancer
 
-Cloudbalance allows users to view, search, and manage their cloud storage accounts, focusing currently on Google Drive and Dropbox.
+Cloud Rebalancer allows users to view, search, and manage their cloud storage accounts, focusing currently on Google Drive and Dropbox.
 
 ## Team
 
-  - __Product Owner__: Preston Parry
-  - __Scrum Master__: Matt Conrad
-  - __Development Team Members__: Alan Sun, Christian Reyes
+  - __Product Owner__: [Zachary Lopez](https://github.com/zdlopez)
+  - __Scrum Master__: [Benoy Maniara](https://github.com/maniarab)
+  - __Development Team Members__: [Andy Coenen](https://github.com/cannoneyed), [Kiran Rao](https://github.com/kranrao)
 
 ### Documentation
 
