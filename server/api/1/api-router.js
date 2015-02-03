@@ -1,6 +1,6 @@
 var pathToServerRoot = '../..';
 var jwt = require('jwt-simple');
-var jwtSecret = require(pathToServerRoot + '/auth/secrets/jwt.secret');
+var jwtSecret = require(pathToServerRoot + '/secrets/jwt.secret');
 var express = require('express');
 var apiRouter = express.Router();
 var dropboxAPI = require('../../externalAPI/dropbox/dropbox-api-v1.js');

@@ -1,4 +1,4 @@
-var secrets = require('./secrets/dropbox.secret');
+var secrets = require('../secrets/dropbox.secret');
 var express = require('express');
 var https = require('https');
 var querystring = require('querystring');

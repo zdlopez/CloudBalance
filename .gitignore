@@ -1,5 +1,8 @@
 ### node etc ###
 
+#OS-Specific
+.DS_Store
+
 # Logs
 logs
 *.log
@@ -30,3 +33,4 @@ bower_components/
 
 # Server Keys/Certificates
 server/*.pem
+server/*.secret
