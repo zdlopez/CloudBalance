@@ -5,19 +5,20 @@ var Footer = require('./Footer');
 var React = require('react');
 var AppStore = require('../stores/appStore');
 
-//get the current data from the Store
-var getAppState = function() {
-  return {
-    allFiles: AppStore.getAll()
-  };
-};
 
 var App = React.createClass({
+
+  //get the current data from the Store
+  getAppState: function() {
+    return {
+      allFiles: AppStore.getAll()
+    };
+  },
 
   //this is run automatically each time a new <App /> is created
   //the object that is returned form getInitialState is set as the state of the component, accessed through this.state.variableName
   getInitialState: function() {
-    return getAppState();
+    return this.getAppState();
   },
 
   //register an event listener with the store once the component has been successfully rendered/mounted on the page
@@ -35,7 +36,6 @@ var App = React.createClass({
       <div id='main-container'>
         <Header />
         <MainSection />
-        <Footer />
       </div>
     );
   },
@@ -43,7 +43,7 @@ var App = React.createClass({
   //Event handler for 'change' events coming from the AppStore. 
   //having an _onChange function here prevents an error from popping up in the console, though it doesn't impact functionality currently
   _onChange: function() {
-    this.setState(getAppState());
+    this.setState(this.getAppState());
   }
 });
 

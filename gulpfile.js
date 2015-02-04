@@ -26,30 +26,15 @@ gulp.task('browserify', function() {
     .pipe(browserify({transform: 'reactify'}))
     .pipe(concat('main.js'))
     .pipe(gulp.dest('dist/js'));
-  gulp.src('public/js/login.js')
-    .pipe(browserify({transform: 'reactify'}))
-    .pipe(concat('login.js'))
-    .pipe(gulp.dest('dist/js'));
-  gulp.src('public/js/signup.js')
-    .pipe(browserify({transform: 'reactify'}))
-    .pipe(concat('signup.js'))
-    .pipe(gulp.dest('dist/js'));
 });
 
 gulp.task('copy', function() {
   gulp.src('public/*.html')
     .pipe(gulp.dest('dist'));
-  // gulp.src('public/login.html')
-    // .pipe(gulp.dest('dist'));
-  // gulp.src('public/signup.html')
-    // .pipe(gulp.dest('dist'));
   gulp.src('public/css/*.css')
     .pipe(gulp.dest('dist/css'));
   gulp.src('public/assets/*.*')
     .pipe(gulp.dest('dist/assets'));
-  // gulp.src('public/bower_components/**/dist/*.min.js')    //, { base: './**/*' }) 
-    // .pipe(gulp.dest('dist/bower_components'));      
-      // No variations are putting the bower component files into the right place right now - moved manually
 });
 
 gulp.task('browserify-stock', function(){
@@ -79,11 +64,13 @@ gulp.task('run', shell.task([
   'cd server && nodemon app.js'
 ]));
 
+gulp.task('build', ['browserify', 'copy']);
 
-gulp.task('default', ['lint', 'browserify', 'copy', 'watch', 'run']);
+
+gulp.task('default', ['build', 'watch', 'run']);
 
 gulp.task('watch', function() {
-  gulp.watch('public/**/*.*', ['default']);
+  gulp.watch('public/**/*.*', ['build']);
 });
 
 

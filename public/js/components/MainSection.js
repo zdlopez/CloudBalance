@@ -56,22 +56,22 @@ var MainSection = React.createClass({
   },
 
   getAllFiles: function() {
-    $.ajax({
-      url: 'api/1/getAllFiles',
-      headers: {
-        'driveToken': sessionStorage.getItem('driveToken'),
-        'dropboxToken' : sessionStorage.getItem('dropboxToken')
-      },
-      dataType: 'json',
-      type: 'GET',
-      success: function(data) {
-
-        AppActions.updateFileLists(data);
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error('api/1/getAllFiles', status, err.toString());
-      }.bind(this)
-    });
+    // $.ajax({
+    //   url: 'api/1/testData',
+    //   headers: {
+    //     'driveToken': sessionStorage.getItem('driveToken'),
+    //     'dropboxToken' : sessionStorage.getItem('dropboxToken')
+    //   },
+    //   dataType: 'json',
+    //   type: 'GET',
+    //   success: function(data) {
+    //     AppActions.updateFileLists(data);
+    //   }.bind(this),
+    //   error: function(xhr, status, err) {
+    //     console.error('api/1/getAllFiles', status, err.toString());
+    //   }.bind(this)
+    // });
+    
   },
 
   //moveFiles is not implemented yet

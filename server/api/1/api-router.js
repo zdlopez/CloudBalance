@@ -5,6 +5,7 @@ var express = require('express');
 var apiRouter = express.Router();
 var dropboxAPI = require('../../externalAPI/dropbox/dropbox-api-v1.js');
 var driveAPI = require('../../externalAPI/drive/drive-api-v2.js');
+var fs = require('fs');
 
 /**
 drive api router is expecting a 'req.body.driveAccessToken' or a '
@@ -17,6 +18,19 @@ apiRouter.all('*', function(req, res, next) {
     dropbox : jwt.decode(req.headers.dropboxtoken, jwtSecret.secret)
   };
   next();
+});
+
+apiRouter.get('/getDropboxFiles', function(req, res) {
+  var fileDirectories = {};
+
+  dropboxAPI.getDelta('/', req.tokens.dropbox)
+  .then(function(data) {
+    fileDirectories.dropbox = data;
+
+    res.set('Content-Type', 'application/json')
+    .status(200).end(JSON.stringify(fileDirectories));
+  });
+
 });
 
 
