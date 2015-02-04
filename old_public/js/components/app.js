@@ -1,24 +1,23 @@
 /*** @jsx React.DOM */
+var Header = require('./Header');
+var MainSection = require('./MainSection');
+var Footer = require('./Footer');
 var React = require('react');
-var FileBrowser = require('./FileBrowser.js');
-var AppStore = require('../stores/AppStore.js')
-var Data = require('../data/test.js');
+var AppStore = require('../stores/appStore');
+
 
 var App = React.createClass({
 
   //get the current data from the Store
   getAppState: function() {
     return {
-      // files: AppStore.getFiles(this.props.cloudService),
-      files: Data.files,
-      levels: AppStore.getLevels(this.props.cloudService) 
+      allFiles: AppStore.getAll()
     };
   },
 
   //this is run automatically each time a new <App /> is created
   //the object that is returned form getInitialState is set as the state of the component, accessed through this.state.variableName
   getInitialState: function() {
-    AppStore.initialize(this.props.cloudService)
     return this.getAppState();
   },
 
@@ -34,7 +33,10 @@ var App = React.createClass({
   //this is where we render the component itself, as well as any subcomponents, as well as passing in data to these subcomponents, where they will access it through this.props.variableName
   render: function() {
     return (
-      <FileBrowser levels={this.state.levels} files={this.state.files} cloudService={this.props.cloudService}/>
+      <div id='main-container'>
+        <Header />
+        <MainSection />
+      </div>
     );
   },
 

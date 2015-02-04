@@ -48,17 +48,6 @@ Dispatcher.prototype = assign({}, Dispatcher.prototype, {
       });
     });
     _promises = [];
-  },
-
-  /**
-   * @param  {array} promisesIndexes
-   * @param  {function} callback
-   */
-  waitFor: function(promiseIndexes, callback) {
-    var selectedPromises = promiseIndexes.map(function(index) {
-      return _promises[index];
-    });
-    return Promise.all(selectedPromises).then(callback);
   }
 });
 
