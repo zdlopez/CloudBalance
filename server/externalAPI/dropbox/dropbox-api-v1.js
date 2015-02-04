@@ -7,6 +7,49 @@ var versionUrl = '/1';
 
 var dropboxAPI = {};
 
+dropboxAPI.getDelta = function getDelta(path, accessToken) {
+  var key;
+  var options;
+  var apiOptions;
+  var pathUrl;
+
+  pathUrl = versionUrl + '/delta';
+
+  //GET request options
+  options = {
+    hostname: apiUrl,
+    path: pathUrl,
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + accessToken,
+      'Content-Type': 'application/json; charset=utf-8',
+    }
+  };
+
+  return new bPromise(function tokenRequest(resolve, reject){
+    var req = https.request(options, function(response) {
+      var data = '';
+
+      response.setEncoding('utf-8');
+
+      response.on('data', function (chunk) {
+        data += chunk;
+      });
+
+      response.on('end', function () {
+        if(response.statusCode < 200 || response.statusCode >= 300) {
+          reject(data);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+
+    req.end();
+  });
+
+};
+
 /**
 *   Get the contents of one folder
 */
