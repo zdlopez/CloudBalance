@@ -16,6 +16,7 @@
     "express-partials": "^0.2.0",
     "express-static": "^1.0.3",
     "file-size": "0.0.5",
+    "formidable": "^1.0.16",
     "fs": "0.0.2",
     "googleapis": "^1.1.1",
     "gulp-minify-css": "^0.4.4",
@@ -35,7 +36,9 @@
     "react-bootstrap": "^0.13.3",
     "react-tools": "^0.12.2",
     "reactify": "^1.0.0",
-    "vinyl-source-stream": "^1.0.0"
+    "vinyl-source-stream": "^1.0.0",
+    "react-tools": "^0.12.2",
+    "request": "^2.53.0"
   },
   "devDependencies": {
     "gulp": "^3.8.10",

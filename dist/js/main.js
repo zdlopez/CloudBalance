@@ -19849,6 +19849,10 @@ var AppStore = require('../stores/AppStore');
 var Data = require('../data/test.js');
 var Actions = require('../actions/Actions');
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> Fixes bug in package.json
 var App = React.createClass({displayName: 'App',
 
   //get the current data from the Store
@@ -19893,7 +19897,11 @@ var App = React.createClass({displayName: 'App',
 
 module.exports = App;
 
+<<<<<<< HEAD
 },{"../actions/Actions":156,"../data/test.js":168,"../stores/AppStore":171,"./FileBrowser":161,"react":155}],158:[function(require,module,exports){
+=======
+},{"../actions/Actions":156,"../stores/AppStore":171,"./FileBrowser":161,"react":155}],158:[function(require,module,exports){
+>>>>>>> Fixes bug in package.json
 /**
  * @jsx React.DOM
  */
