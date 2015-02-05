@@ -26,68 +26,61 @@ dropboxAPI.getDelta = function getDelta(path, accessToken) {
     }
   };
 
-  return new bPromise(function tokenRequest(resolve, reject){
-    var req = https.request(options, function(response) {
-      var data = '';
+  var parseFiles = function(filesArr){
+    //console.log('files', filesArr);
+    var myfiles = [];
+    var fileHash = {};
+    var structureHash = {};
 
-      response.setEncoding('utf-8');
+    for(var i = 0; i < filesArr.length; i++){
+      var file = {};
 
-      response.on('data', function (chunk) {
-        data += chunk;
-      });
+      //meta portion
+      var dMeta = filesArr[i][1];
+      file.name = dMeta.path.split('/').pop();
+      file.meta = {};
+      file.meta.rev = dMeta.rev;
+      file.meta.thumb_exists = dMeta.thumb_exists;
 
-      response.on('end', function () {
-        if(response.statusCode < 200 || response.statusCode >= 300) {
-          reject(data);
-        } else {
-          resolve(data);
-        }
-      });
-    });
+      file.meta.path = dMeta.path;
+      file.meta.is_dir = dMeta.is_dir;
+      file.meta.icon = dMeta.icon;
+      file.meta.read_only = dMeta.read_only;
+      file.meta.modifier = dMeta.modifier;
+      file.meta.bytes = dMeta.bytes;
+      file.meta.modified = dMeta.modified;
+      file.meta.size = dMeta.size;
 
-    req.end();
-  });
+      file.meta.root = dMeta.root;
+      file.meta.mimeType = dMeta.mimeType;
+      file.meta.revision = dMeta.version;
 
-};
+      //is a directory
+      if(file.meta.is_dir){
+        file.files = [];
+        structureHash[file.meta.path] = myfiles.length;
 
-/**
-*   Get the contents of one folder
-*/
-dropboxAPI.getFileDirectory = function getFileDirectory(path, accessToken) {
-  var key;
-  var options;
-  var apiOptions;
-  var pathUrl;
+      }
+      myfiles.push(file);
+    }
 
-  //core API options to be put in the query string
-  apiOptions = {
-    'file_limit' : 25000,
-    'list' : true,
-  };
+    //handles nesting
+    var results = [];
+    for(var j = 0; j < myfiles.length; j++){
+      var path = myfiles[j].meta.path;
+      var folder = myfiles[j].meta.path.replace('/' + myfiles[j].name, '');
+      var res = structureHash[folder];
+      if(res !== undefined){
+        myfiles[res].files.push(myfiles[j]);
+      } else {
+        results.push(myfiles[j]);
+      }
+    }
 
-  //build the path
-  pathUrl = versionUrl + '/metadata/auto' + path + '?';
+    return results;
 
-  //add the apiOptions to the query string
-  for(key in apiOptions) {
-    pathUrl += key + '=' + apiOptions[key] + '&';
   }
 
-  //remove trailing '&'
-  pathUrl = pathUrl.substr(0, pathUrl.length - 1);
-
-  //GET request options
-  options = {
-    hostname: apiUrl,
-    path: pathUrl,
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + accessToken,
-      'Content-Type': 'application/json; charset=utf-8',
-    }
-  };
-
-  //promise to return the directory data
   return new bPromise(function tokenRequest(resolve, reject){
     var req = https.request(options, function(response) {
       var data = '';
@@ -102,121 +95,186 @@ dropboxAPI.getFileDirectory = function getFileDirectory(path, accessToken) {
         if(response.statusCode < 200 || response.statusCode >= 300) {
           reject(data);
         } else {
-          resolve(data);
+          data = JSON.parse(data);
+          var myDropboxFiles = parseFiles(data.entries)
+          //console.log('myfiles are ', myDropboxFiles);
+          resolve(myDropboxFiles);
         }
       });
     });
 
     req.end();
   });
+
 };
 
+// /**
+// *   Get the contents of one folder
+// */
+// dropboxAPI.getFileDirectory = function getFileDirectory(path, accessToken) {
+//   var key;
+//   var options;
+//   var apiOptions;
+//   var pathUrl;
 
-dropboxAPI.getFileDirectories = function getFileDirectories(path, depth, accessToken) {
-  var all = depth === -1 ? true : false;
-  var rootDirectory = [];
-  var unresolved = 0;
+//   //core API options to be put in the query string
+//   apiOptions = {
+//     'file_limit' : 25000,
+//     'list' : true,
+//   };
 
-  return new bPromise(function directoriesPromise(resolve, reject) {
+//   //build the path
+//   pathUrl = versionUrl + '/metadata/auto' + path + '?';
 
-    //returns a function that parses the data
-    var makeDataParser = function makeDataParser(directory, depth) {
+//   //add the apiOptions to the query string
+//   for(key in apiOptions) {
+//     pathUrl += key + '=' + apiOptions[key] + '&';
+//   }
 
-      return function parseData(data) {
-        //parse returned data structure from string to an object
-        var contents = JSON.parse(data).contents;
+//   //remove trailing '&'
+//   pathUrl = pathUrl.substr(0, pathUrl.length - 1);
 
-        if(contents) {
-          contents.forEach(function(child) {
-            var fileObject = {
-              'fileName' : Path.basename(child.path),
-              'fileId' : child.path,
-              'filePath' : child.path,
-              'fileType' : child.is_dir ? 'folder' : 'file',
-              'fileIcon' : child.is_dir ? './assets/folder-icon-65.png' : './assets/file-icon.png',
-              'children' : child.is_dir ? [] : undefined
-            };
+//   //GET request options
+//   options = {
+//     hostname: apiUrl,
+//     path: pathUrl,
+//     method: 'GET',
+//     headers: {
+//       'Authorization': 'Bearer ' + accessToken,
+//       'Content-Type': 'application/json; charset=utf-8',
+//     }
+//   };
 
-            //send a directory request
-            if((all || depth > 0) && fileObject.fileType === 'folder') {
-              directoryRequest(fileObject.filePath, fileObject.children, depth - 1);
-            }
+//   //promise to return the directory data
+//   return new bPromise(function tokenRequest(resolve, reject){
+//     var req = https.request(options, function(response) {
+//       var data = '';
 
-            directory.push(fileObject);
-          });
-        }
+//       response.setEncoding('utf-8');
 
-        //check to see if all requests have been resolved
-        unresolved--;
-        if(unresolved === 0) {
-          resolve(rootDirectory);
-        }
-      };
+//       response.on('data', function (chunk) {
+//         data += chunk;
+//       });
 
-    };
+//       response.on('end', function () {
+//         if(response.statusCode < 200 || response.statusCode >= 300) {
+//           reject(data);
+//         } else {
+//           resolve(data);
+//         }
+//       });
+//     });
 
-    //simple rejection function
-    var rejectData = function rejectData(err) {
-      reject(err);
-    };
-
-    //async function to retrieve and parse directory contents
-    var directoryRequest = function directoryRequest(path, directory, depth) {
-      unresolved++;
-      dropboxAPI.getFileDirectory(path, accessToken)
-      .then(makeDataParser(directory, depth), rejectData);
-    };
-
-    //send initial directory GET
-    directoryRequest(path, rootDirectory, depth);
-  });
-};
-
-// dropboxAPI.removeFile = function removeFile(path) {
-//
+//     req.end();
+//   });
 // };
 
-//get the User data from /account/info
-dropboxAPI.getUserInfo = function getUserInfo(accessToken) {
-  var options;
-  var pathUrl;
 
-  //build the path
-  pathUrl = versionUrl + '/account/info';
+// dropboxAPI.getFileDirectories = function getFileDirectories(path, depth, accessToken) {
+//   var all = depth === -1 ? true : false;
+//   var rootDirectory = [];
+//   var unresolved = 0;
 
-  //GET request options
-  options = {
-    hostname: apiUrl,
-    path: pathUrl,
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + accessToken,
-      'Content-Type': 'application/json; charset=utf-8',
-    }
-  };
+//   return new bPromise(function directoriesPromise(resolve, reject) {
 
-  //promise to return the directory data
-  return new bPromise(function tokenRequest(resolve, reject){
-    var req = https.request(options, function(response) {
-      var data = '';
+//     //returns a function that parses the data
+//     var makeDataParser = function makeDataParser(directory, depth) {
 
-      response.setEncoding('utf-8');
+//       return function parseData(data) {
+//         //parse returned data structure from string to an object
+//         var contents = JSON.parse(data).contents;
 
-      response.on('data', function (chunk) {
-        data += chunk;
-      });
+//         if(contents) {
+//           contents.forEach(function(child) {
+//             var fileObject = {
+//               'fileName' : Path.basename(child.path),
+//               'fileId' : child.path,
+//               'filePath' : child.path,
+//               'fileType' : child.is_dir ? 'folder' : 'file',
+//               'fileIcon' : child.is_dir ? './assets/folder-icon-65.png' : './assets/file-icon.png',
+//               'children' : child.is_dir ? [] : undefined
+//             };
 
-      response.on('end', function () {
-        if(response.statusCode < 200 || response.statusCode >= 300) {
-          reject(data);
-        } else {
-          resolve(data);
-        }
-      });
-    });
+//             //send a directory request
+//             if((all || depth > 0) && fileObject.fileType === 'folder') {
+//               directoryRequest(fileObject.filePath, fileObject.children, depth - 1);
+//             }
 
-    req.end();
-  });
-};
+//             directory.push(fileObject);
+//           });
+//         }
+
+//         //check to see if all requests have been resolved
+//         unresolved--;
+//         if(unresolved === 0) {
+//           resolve(rootDirectory);
+//         }
+//       };
+
+//     };
+
+//     //simple rejection function
+//     var rejectData = function rejectData(err) {
+//       reject(err);
+//     };
+
+//     //async function to retrieve and parse directory contents
+//     var directoryRequest = function directoryRequest(path, directory, depth) {
+//       unresolved++;
+//       dropboxAPI.getFileDirectory(path, accessToken)
+//       .then(makeDataParser(directory, depth), rejectData);
+//     };
+
+//     //send initial directory GET
+//     directoryRequest(path, rootDirectory, depth);
+//   });
+// };
+
+// // dropboxAPI.removeFile = function removeFile(path) {
+// //
+// // };
+
+// //get the User data from /account/info
+// dropboxAPI.getUserInfo = function getUserInfo(accessToken) {
+//   var options;
+//   var pathUrl;
+
+//   //build the path
+//   pathUrl = versionUrl + '/account/info';
+
+//   //GET request options
+//   options = {
+//     hostname: apiUrl,
+//     path: pathUrl,
+//     method: 'GET',
+//     headers: {
+//       'Authorization': 'Bearer ' + accessToken,
+//       'Content-Type': 'application/json; charset=utf-8',
+//     }
+//   };
+
+//   //promise to return the directory data
+//   return new bPromise(function tokenRequest(resolve, reject){
+//     var req = https.request(options, function(response) {
+//       var data = '';
+
+//       response.setEncoding('utf-8');
+
+//       response.on('data', function (chunk) {
+//         data += chunk;
+//       });
+
+//       response.on('end', function () {
+//         if(response.statusCode < 200 || response.statusCode >= 300) {
+//           reject(data);
+//         } else {
+//           resolve(data);
+//         }
+//       });
+//     });
+
+//     req.end();
+//   });
+// };
 
 module.exports = dropboxAPI;
