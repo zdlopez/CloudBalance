@@ -1,7 +1,5 @@
 {
-  "has_more": false,
-  "cursor": "AAHSI8Tqfj31Rp-7kKxZC2sONurmirLdKYqiuL_A3aBvYkw1f1w7TX46-yRW_mP_yiZnSbcIsh1LUZKXaHhCmQKS3vdfIpKJWCTpTkAzFgbBopbv842CndpbnR5WE5BJWLw",
-  "entries": [
+  "files": [
     [
       "/pics",
       {
@@ -262,6 +260,5 @@
         "revision": 18
       }
     ]
-  ],
-  "reset": true
+  ]
 }
