@@ -48,7 +48,7 @@ apiRouter.get('/getAllFiles', function(req,res) {
       }
     });
 
-  dropboxAPI.getFileDirectories('/', -1, req.tokens.dropbox)
+  dropboxAPI.getDelta('/', req.tokens.dropbox)
   .then(function(data) {
     fileDirectories.dropbox = data;
     unresolved--;
