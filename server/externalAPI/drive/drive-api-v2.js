@@ -45,34 +45,73 @@ module.exports.getDriveFiles = function(accessToken) {
 		});
 	};
 
-	return getFileList() // adds all files to allFiles variable; each key is the fileId and each value is has the ID, name, icon, link, and type
+	var parseFiles = function(filesArr){
+		var fileHash = {};
+		var structureHash = {};
+		var myfiles = [];
+		var level = myfiles;
+		var dirLevel = filesArr[filesArr.length -1].parents[0].id;
+
+		//reverse order to start with nested directories
+		for (var i = filesArr.length - 1; i >= 0; i--){
+			var gFile = filesArr[i];
+			var file = {};
+
+			//if it is a dir, add to fileHash
+			if(gFile.mimeType === 'application/vnd.google-apps.folder'){
+				fileHash[gFile.id] = '/' + gFile.title;
+				if(!gFile.parents[0].isRoot){
+					fileHash[gFile.id] = fileHash[gFile.parents[0].id] + '/' + gFile.title;
+				}
+				file.files = [];
+				structureHash[fileHash[gFile.id]] = myfiles.length;
+			}
+
+			file.name = gFile.title;
+			file.meta = {};
+			file.meta.gId =  gFile.id;
+			file.meta.rev = gFile.headRevisionId;
+			file.meta.thumb_exists = true;
+
+			file.meta.path = gFile.parents[0].isRoot ? '/' + file.name : fileHash[gFile.parents[0].id] + '/' + file.name;
+			file.meta.is_dir = gFile.mimeType === 'application/vnd.google-apps.folder' ? true : false;
+			file.meta.icon = gFile.thumbnailLink;
+			file.meta.read_only = !gFile.editable;
+			file.meta.modifier = null;
+			file.meta.bytes = gFile.fileSize;
+			file.meta.modified = gFile.modifiedDate;
+			file.meta.size = gFile.fileSize;
+
+			file.root = 'drive';
+			file.mimeType = gFile.mimeType;
+			file.revision = gFile.version;
+
+			//push files in sequence
+			myfiles.push(file);
+
+		}
+
+		//iterate through sequential files, placing them back into proper directory depth structure
+		var result = [];
+		for(var j = 0; j < myfiles.length; j++){
+			var folder = myfiles[j].meta.path.replace('/' + myfiles[j].name, '');
+			var res = structureHash[folder];
+			if(res !== undefined){
+				myfiles[res].files.push(myfiles[j]);
+			} else {
+				result.push(myfiles[j]);
+			}
+		}
+
+		return result;
+	}
+
+	return getFileList() 
 	.then(function(result) {
-		result[0].items.forEach(function(item) {
-			var itemId = item.id;
-			allFiles[itemId] = {
-				fileID: item.id,
-				fileName: item.title,
-				fileIcon: item.iconLink,
-				fileLink: item.alternateLink,
-				fileType: item.mimeType
-			};
-			if (item.thumbnailLink) {allFiles[itemId].fileIcon = item.thumbnailLink};
-			if (item.mimeType === 'application/vnd.google-apps.folder') {allFiles[itemId].fileIcon = './assets/folder-icon-65.png'};
-		});
-		return {};
-	})
-	.then(getRoot)
-	.then(function(result) {
-		var folderId = result[0].rootFolderId;
-		return {
-			fileID: folderId,
-			fileName: 'Root'
-		};
-	})
-	.delay(1000)
-	.then(addFileToList) // recursive call to establish parent/child relationship between all files
-	.delay(3000)
-	.then(function() {
-		return list;
+		var myGFiles = parseFiles(result[0].items);
+		//console.log('postParse is', myGFiles);
+		//need to pass myGFiles to appropriate place
+		return myGFiles;
 	});
-};
+
+}
