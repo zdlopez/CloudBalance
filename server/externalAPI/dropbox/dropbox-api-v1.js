@@ -1,6 +1,7 @@
 var Path = require('path');
 var https = require('https');
 var bPromise = require('bluebird');
+var fs = require('fs');
 
 var apiUrl = 'api.dropbox.com';
 var versionUrl = '/1';
@@ -276,5 +277,57 @@ dropboxAPI.getDelta = function getDelta(path, accessToken) {
 //     req.end();
 //   });
 // };
+
+dropboxAPI.uploadFile = function(accessToken, files, key){
+  // POST request path
+  var pathUrl = versionUrl + '/files_put/auto/' + files[key].name; // file name
+  
+  // POST request options
+  var options = {
+    hostname: 'api-content.dropbox.com',
+    path: pathUrl,
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + accessToken,
+      'Content-Type': files[key].type, // content type
+      'Content-Length': files[key].size // content size
+    }
+  };
+  
+  // promise to return that the file was posted
+  return new bPromise(function tokenRequest(resolve, reject){
+    var req = https.request(options, function(response) {
+      var data = '';
+
+      response.setEncoding('utf-8');
+
+      response.on('data', function (chunk) {
+        data += chunk;
+      });
+
+      response.on('end', function () {
+        if(response.statusCode < 200 || response.statusCode >= 300) {
+          console.log('Upload rejected!');
+          reject(data);
+        } else {
+          console.log('Upload resolved!');
+          resolve(data);
+        }
+      });
+    });
+
+    // read file path on server, pipe content to dropbox
+    fs.readFile(files[key].path, function read(err, data) {
+      if (err) {
+        return console.error('read failed:', err);
+      }
+
+      // write the POST body and send request to dropbox
+      req.write(data);
+      req.end();
+    });
+
+  });
+};
 
 module.exports = dropboxAPI;

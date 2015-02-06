@@ -5,7 +5,7 @@ var express = require('express');
 var apiRouter = express.Router();
 var dropboxAPI = require('../../externalAPI/dropbox/dropbox-api-v1.js');
 var driveAPI = require('../../externalAPI/drive/drive-api-v2.js');
-var fs = require('fs');
+var formidable = require('formidable');
 
 /**
 drive api router is expecting a 'req.body.driveAccessToken' or a '
@@ -97,5 +97,33 @@ apiRouter.get('/moveFiles', function(req,res) {
     //it may be easier to build in some logic to see if fromService and toService are the same. if they are, we can then issue a move command to that api, rather than the steps outlined above.
     //however, MVP is whichever is easiest, and I have a feeling that the path outlined above is going to easiest since it will work for all cases.
   });
+
+apiRouter.post('/uploadFile', function(req, res) {
+
+  // formidable to parse multi-part form
+  var form = new formidable.IncomingForm();
+
+  form.parse(req, function(err, fields, files) {
+    if (err) {
+      throw err;
+    }
+
+    // route to right cloud service api
+    if (Object.keys(files)[0] === 'dropbox') { // send data to dropbox api
+      dropboxAPI.uploadFile(req.tokens.dropbox, files, 'dropbox');
+    } else { // send data to google api
+      driveAPI.uploadFile(req.tokens.drive, files, 'google');
+    }
+
+  });
+  
+  form.on('end', function() {
+    // response to client
+    res.writeHead(201, {'Content-Type': 'text/html'});
+    res.write('Received Upload');
+    res.end();
+  });
+
+});
 
 module.exports = apiRouter;

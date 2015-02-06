@@ -3,6 +3,8 @@ var OAuth2 = google.auth.OAuth2;
 var secrets = require('../../secrets/drive.secret');
 var Promise = require('bluebird');
 var drive = google.drive('v2');
+var fs = require('fs');
+var request = require('request');
 var oauth2Client = new OAuth2(secrets.CLIENT_ID, secrets.CLIENT_SECRET, secrets.REDIRECT_URL);
 var filesize = require('file-size');
 
@@ -13,9 +15,9 @@ var getFile = Promise.promisify(drive.files.get);
 var getChildren = Promise.promisify(drive.children.list);
 var getFileList = Promise.promisify(drive.files.list);
 
+var driveAPI = {};
 
-
-module.exports.getDriveFiles = function(accessToken) {
+driveAPI.getDriveFiles = function(accessToken) {
 
 	oauth2Client.setCredentials({
 	  access_token: accessToken
@@ -106,4 +108,46 @@ module.exports.getDriveFiles = function(accessToken) {
 		return myGFiles;
 	});
 
-}
+};
+
+driveAPI.uploadFile = function(accessToken, files, key) {
+
+  // read file path on server, pipe content to dropbox
+  fs.readFile(files[key].path, function read(err, data) {
+    if (err) {
+      return console.error('read failed:', err);
+    }
+    
+    request.post({
+    	'url': 'https://www.googleapis.com/upload/drive/v2/files',
+    	'qs': {
+    		'uploadType': 'multipart'
+    	},
+    	'headers': {
+    		'Authorization': 'Bearer ' + accessToken
+    	},
+    	'multipart': [
+    	  {
+    	  	'Content-Type': 'application/json; charset=UTF-8',
+    	  	'body': JSON.stringify({
+    	  		'title': files[key].name
+    	  	})
+    	  },
+    	  {
+    	  	'Content-Type': files[key].type,
+    	  	'Content-Length': files[key].size,
+    	  	'body': data
+    	  }
+    	]
+    }, function(err, httpResponse, body) {
+    	if (err) {
+  	    return console.error('upload failed:', err);
+  	  }
+  	  console.log('Upload successful!'/* + 'Server responded with:', body*/);
+    });
+
+  });
+
+};
+
+module.exports = driveAPI;

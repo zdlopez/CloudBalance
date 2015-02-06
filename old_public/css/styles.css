@@ -102,6 +102,11 @@ ul {
   margin: 4px 0 4px 8px;
   color: white;
 }
+#dropbox-upload {
+  visibility: hidden;
+  width: 1px;
+  height: 1px
+}
 
 /* Google.js */
 #google-container {
@@ -109,6 +114,11 @@ ul {
   margin: 10px 3% 10px 1.5%;
   overflow: hidden;
   overflow-y: auto;
+}
+#google-upload {
+  visibility: hidden;
+  width: 1px;
+  height: 1px
 }
 
 /* File.js */
