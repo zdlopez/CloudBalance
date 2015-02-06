@@ -1,0 +1,153 @@
+/* styles.css */
+
+
+/* index.html */
+body {
+  background-image: url('../assets/cloud_bg.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 0;
+  height:95%;
+ /* padding-bottom: 200px; */    /*Height of footer*/    /*initial: 50px;*/
+}
+
+#main {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+}
+
+/*App.js*/
+#main-container {
+  width: 100%;
+  min-height: 100%;
+  padding: 0px;
+  position:relative;
+}
+
+/* Header.js */
+#header {
+  background-color: black;
+  color: white;
+  height: 80px;
+  width: 100%;
+}
+
+#banner-img {
+  background-image: url('../assets/cloud-banner-70.png');
+  height: 70px;
+  width: 54px;
+  float: left;
+  margin: 5px;
+  border-radius: 5px;
+}
+
+#title-header {
+  display: inline-block;
+  margin: 5px;
+}
+
+#username-header {        
+  margin: 5px;
+  margin-left: 120px;
+}
+
+#logout-header {
+  float: right;
+  margin: 25px;
+  cursor: pointer;
+}
+
+/* MainSection.js / Dropbox.js/Google.js */
+#main-section{
+  padding-bottom:750px; /*did this to display footer properly*/
+}       
+
+.files-container {
+  background-image: url('../assets/transpBlack50.png');
+  border-radius: 5px;
+  width: 45.5%;
+  height: 450px;
+}
+
+ul {
+  list-style-type: none;
+}
+
+/* Search.js */
+#search-container {
+  text-align: center;
+  margin-top: 8px;
+  padding: 2px;
+}
+
+#search-box {
+  margin-right: 8px;
+  width: 300px;
+}
+
+
+
+/* Dropbox.js */
+.file-list {      /* ul */
+
+}
+#dropbox-container {
+  float: left;
+  margin: 10px 1.5% 10px 3%;
+  overflow: hidden;
+}
+.service-title {
+  margin: 4px 0 4px 8px;
+  color: white;
+}
+
+/* Google.js */
+#google-container {
+  float: right;
+  margin: 10px 3% 10px 1.5%;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+/* File.js */
+.file-container {  
+  text-align: center;
+  height: 80px;
+  width: 65px;
+  overflow: hidden;
+  float: left;
+  margin: 5px;
+}
+.file-icon {
+  height: 65px;
+  width: 65px;
+}
+.fileName {
+  font-size: 10px;
+  color: white;
+}
+
+/* Footer.js */
+#footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: black;
+  color: white;
+  height: 250px;  /* 50px;*/
+  width: 100%;
+  margin: 0px;
+  padding: 5px 20px;
+}
+.profile {
+  margin: 5px 15px;
+  /*diplay: inline;*/
+  float: left;
+}
+.profile-pic {
+  border-radius: 50px;
+
+}
+
