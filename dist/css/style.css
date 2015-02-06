@@ -4940,3 +4940,6 @@ img.icon {
   width: 25px;
   height: 25px;
   margin: 0px 10px 0px 10px; }
+
+.holder.dragover {
+  border-color: #0093fa; }

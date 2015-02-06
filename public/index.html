@@ -11,7 +11,6 @@
 </head>
 <body>
 
-
   <!-- Fixed navbar -->
   <div class="navbar navbar-default">
     <div class="container">
@@ -32,14 +31,14 @@
 <div class="row">
   <div class="col-md-1"></div>
   <div class="col-md-5">
-    <div class="panel panel-default">
+    <div class="panel panel-default holder" cloudService="Dropbox">
       <div class="panel-body">
         <div id="Dropbox"></div>
       </div>
     </div>
   </div>
   <div class="col-md-5">
-    <div class="panel panel-default">
+    <div class="panel panel-default holder" cloudService="Google">
       <div class="panel-body">
         <div id="Google"></div>
       </div>
@@ -48,14 +47,38 @@
 </div>
 
 
-
-
-
-
-
-
 <script src="js/main.js"></script>
 
+<script>
+  var onDragEnter = function(event) {
+      event.preventDefault();
+      $(this).addClass("dragover");
+  }, 
+
+  onDragOver = function(event) {
+      event.preventDefault(); 
+      if(!$(this).hasClass("dragover"))
+          $(this).addClass("dragover");
+  }, 
+
+  onDragLeave = function(event) {
+      event.preventDefault();
+      $(this).removeClass("dragover");
+  },
+
+  onDrop = function(event) {
+      $(this).removeClass("dragover");
+  };
+
+  var holder = $('.holder');
+
+  holder.on("dragenter", onDragEnter);
+  holder.on("dragover", onDragOver);
+  holder.on("dragleave", onDragLeave);
+  holder.on("drop", onDrop);
+
+
+</script>
 
 </body>
 </html>
