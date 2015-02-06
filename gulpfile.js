@@ -15,6 +15,7 @@ var bower = require('gulp-bower');
 var react = require('gulp-react');
 var reactify = require('reactify');
 var source = require('vinyl-source-stream');
+var uglify = require('gulp-uglifyjs');
 // var clean = require('gulp-clean')
 
 var paths = {
@@ -51,6 +52,12 @@ gulp.task('compile', function(){
   return b.bundle()
     .pipe(source('main.js'))
     .pipe(gulp.dest('./dist/js'));
+});
+
+gulp.task('compress', function() {
+  gulp.src('./dist/js/*.js')
+    .pipe(uglify('main.min.js'))
+    .pipe(gulp.dest('dist/js'))
 });
 
 
@@ -91,7 +98,7 @@ gulp.task('run', shell.task([
   'cd server && nodemon app.js'
 ]));
 
-gulp.task('build', ['compile', 'sass', 'copy']);
+gulp.task('build', ['compile', 'compress', 'sass', 'copy']);
 
 
 gulp.task('default', ['build', 'watch', 'run']);

@@ -19848,8 +19848,8 @@ module.exports = AppActions;
 var React = require('react');
 var FileBrowser = require('./FileBrowser');
 var AppStore = require('../stores/AppStore');
-var Data = require('../data/test.js');
 var Actions = require('../actions/Actions');
+
 
 var App = React.createClass({displayName: "App",
 
@@ -19896,7 +19896,7 @@ var App = React.createClass({displayName: "App",
 module.exports = App;
 
 
-},{"../actions/Actions":156,"../data/test.js":168,"../stores/AppStore":171,"./FileBrowser":161,"react":155}],158:[function(require,module,exports){
+},{"../actions/Actions":156,"../stores/AppStore":171,"./FileBrowser":161,"react":155}],158:[function(require,module,exports){
 /**
  * @jsx React.DOM
  */
@@ -20608,6 +20608,8 @@ var CHANGE_EVENT = 'change';
 
 var _files = {};
 var _levels = {};
+
+
 
 var updateLevels = function(levels, cloudService) {
   _levels[cloudService] = levels;

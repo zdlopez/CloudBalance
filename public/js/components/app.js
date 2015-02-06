@@ -5,8 +5,8 @@
 var React = require('react');
 var FileBrowser = require('./FileBrowser');
 var AppStore = require('../stores/AppStore');
-var Data = require('../data/test.js');
 var Actions = require('../actions/Actions');
+
 
 var App = React.createClass({
 
