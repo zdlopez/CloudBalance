@@ -23,6 +23,9 @@ coverage
 
 # Compiled Dirs (http://nodejs.org/api/addons.html)
 build/
+dist/js
+dist/index.html
+dist/css
 
 # Dependency directorys
 # Deployed apps should consider commenting these lines out:

@@ -25,6 +25,8 @@ apiRouter.all('*', function(req, res, next) {
 apiRouter.get('/getDropboxFiles', function(req, res) {
   var fileDirectories = {};
 
+  console.log("TOKEN", req.tokens.dropbox);
+
   dropboxAPI.getDelta('/', req.tokens.dropbox)
   .then(function(data) {
     fileDirectories = data;
@@ -109,20 +111,30 @@ apiRouter.post('/uploadFile', function(req, res) {
     }
 
     // route to right cloud service api
-    if (Object.keys(files)[0] === 'dropbox') { // send data to dropbox api
-      dropboxAPI.uploadFile(req.tokens.dropbox, files, 'dropbox');
+    if (Object.keys(files)[0] === 'Dropbox') { // send data to dropbox api
+      dropboxAPI.uploadFile(req.tokens.dropbox, files, 'Dropbox')
+      .then(function (data) {
+        res.writeHead(201, {'Content-Type': 'text/html'});
+        res.write('Received Upload');
+        res.end();
+      });
     } else { // send data to google api
-      driveAPI.uploadFile(req.tokens.drive, files, 'google');
+      driveAPI.uploadFile(req.tokens.drive, files, 'Google')
+      .then(function (data) {
+        res.writeHead(201, {'Content-Type': 'text/html'});
+        res.write('Received Upload');
+        res.end();
+      });
     }
 
   });
   
-  form.on('end', function() {
-    // response to client
-    res.writeHead(201, {'Content-Type': 'text/html'});
-    res.write('Received Upload');
-    res.end();
-  });
+  // form.on('end', function() {
+  //   // response to client
+  //   res.writeHead(201, {'Content-Type': 'text/html'});
+  //   res.write('Received Upload');
+  //   res.end();
+  // });
 
 });
 

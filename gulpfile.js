@@ -16,6 +16,8 @@ var react = require('gulp-react');
 var reactify = require('reactify');
 var source = require('vinyl-source-stream');
 var uglify = require('gulp-uglifyjs');
+var clean = require('gulp-clean');
+var streamify = require('gulp-streamify')
 // var clean = require('gulp-clean')
 
 var paths = {
@@ -44,6 +46,11 @@ gulp.task('sass', function(done) {
     .pipe(gulp.dest('./dist/css/'));
 });
 
+
+gulp.task('clean', function () {
+  return gulp.src(['dist/js'], {read: false})
+    .pipe(clean());
+});
 
 gulp.task('compile', function(){
   var b = browserify();
@@ -98,7 +105,7 @@ gulp.task('run', shell.task([
   'cd server && nodemon app.js'
 ]));
 
-gulp.task('build', ['compile', 'compress', 'sass', 'copy']);
+gulp.task('build', ['clean', 'compile', 'sass', 'copy']);
 
 
 gulp.task('default', ['build', 'watch', 'run']);
