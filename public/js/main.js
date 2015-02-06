@@ -1,7 +1,6 @@
 /**
  * @jsx React.DOM
  */
-// So build process knows to convert from JSX to JS
 
 $(document).ready(function() {
 
@@ -15,8 +14,14 @@ $(document).ready(function() {
     );
   }
 
-  render('Dropbox');
-  render('Google');
+  if( sessionStorage.getItem('dropboxToken') && sessionStorage.getItem('driveToken') ) {
+    render('Dropbox');
+    render('Google');   
+  } else {
+    window.location = "/login";
+  }
+
+
 
   
 });

@@ -52,7 +52,7 @@ dropboxAPI.getDelta = function getDelta(path, accessToken) {
       file.meta.size = dMeta.size;
 
       file.meta.root = dMeta.root;
-      file.meta.mimeType = dMeta.mimeType;
+      file.meta.mime_type = dMeta.mime_type;
       file.meta.revision = dMeta.version;
 
       //is a directory

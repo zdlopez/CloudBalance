@@ -2,7 +2,6 @@
 /**
  * @jsx React.DOM
  */
-// So build process knows to convert from JSX to JS
 
 $(document).ready(function() {
 
@@ -16,8 +15,14 @@ $(document).ready(function() {
     );
   }
 
-  render('Dropbox');
-  render('Google');
+  if( sessionStorage.getItem('dropboxToken') && sessionStorage.getItem('driveToken') ) {
+    render('Dropbox');
+    render('Google');   
+  } else {
+    window.location = "/login";
+  }
+
+
 
   
 });
@@ -19800,7 +19805,35 @@ var AppActions = {
       folderName: folderName,
       cloudService: cloudService
     })
+  },
+
+  getAllFiles: function(cloudService) {
+    var urls = {
+      'Dropbox': 'api/1/getDropboxFiles',
+      'Google': 'api/1/getDriveFiles'
+    }
+
+    $.ajax({
+      url: urls[cloudService],
+      headers: {
+        'driveToken': sessionStorage.getItem('driveToken'),
+        'dropboxToken' : sessionStorage.getItem('dropboxToken')
+      },
+      dataType: 'json',
+      type: 'GET',
+      success: function(data) {
+        AppDispatcher.handleViewAction({
+          actionType: AppConstants.UPDATE_FILES,
+          files: data,
+          cloudService: cloudService
+        })
+      },
+      error: function(xhr, status, err) {
+        console.error('api/1/getAllFiles', status, err.toString());
+      }
+    });   
   }
+
 
 };
 
@@ -19810,9 +19843,10 @@ module.exports = AppActions;
 },{"../constants/appConstants.js":167,"../dispatcher/appDispatcher.js":169}],157:[function(require,module,exports){
 /*** @jsx React.DOM */
 var React = require('react');
-var FileBrowser = require('./FileBrowser.js');
-var AppStore = require('../stores/AppStore.js')
+var FileBrowser = require('./FileBrowser');
+var AppStore = require('../stores/AppStore');
 var Data = require('../data/test.js');
+var Actions = require('../actions/Actions');
 
 var App = React.createClass({displayName: "App",
 
@@ -19820,7 +19854,7 @@ var App = React.createClass({displayName: "App",
   getAppState: function() {
     return {
       // files: AppStore.getFiles(this.props.cloudService),
-      files: Data.files,
+      files: AppStore.getFiles(this.props.cloudService),
       levels: AppStore.getLevels(this.props.cloudService) 
     };
   },
@@ -19835,6 +19869,7 @@ var App = React.createClass({displayName: "App",
   //register an event listener with the store once the component has been successfully rendered/mounted on the page
   componentDidMount: function() {
     AppStore.addChangeListener(this._onChange);
+    Actions.getAllFiles(this.props.cloudService);
   },
 
   componentWillUnmount: function() {
@@ -19858,7 +19893,7 @@ var App = React.createClass({displayName: "App",
 module.exports = App;
 
 
-},{"../data/test.js":168,"../stores/AppStore.js":171,"./FileBrowser.js":161,"react":155}],158:[function(require,module,exports){
+},{"../actions/Actions":156,"../data/test.js":168,"../stores/AppStore":171,"./FileBrowser":161,"react":155}],158:[function(require,module,exports){
 var React = require('react');
 var fileUtil = require('../../utils/fileUtil.js');
 
@@ -20146,6 +20181,7 @@ module.exports = React.createClass({displayName: "exports",
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
+  UPDATE_FILES: null,
   UPDATE_HIERARCHY: null,
   ENTER_FOLDER: null
 });
@@ -20534,6 +20570,10 @@ var enterFolder = function(folderName, cloudService) {
   _levels[cloudService].push(folderName);
 }
 
+var updateFiles = function(files, cloudService) {
+  _files[cloudService] = files;
+}
+
 var AppStore = assign({}, EventEmitter.prototype, {
 
   initialize: function(cloudService) {
@@ -20573,6 +20613,10 @@ var AppStore = assign({}, EventEmitter.prototype, {
 
       case AppConstants.ENTER_FOLDER:
         enterFolder(action.folderName, action.cloudService);
+        break;
+
+      case AppConstants.UPDATE_FILES:
+        updateFiles(action.files, action.cloudService);
         break;
 
     }
