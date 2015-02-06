@@ -4,6 +4,7 @@ var secrets = require('../../secrets/drive.secret');
 var Promise = require('bluebird');
 var drive = google.drive('v2');
 var oauth2Client = new OAuth2(secrets.CLIENT_ID, secrets.CLIENT_SECRET, secrets.REDIRECT_URL);
+var filesize = require('file-size');
 
 google.options({ auth: oauth2Client });
 
@@ -29,14 +30,17 @@ module.exports.getDriveFiles = function(accessToken) {
 
 		//reverse order to start with nested directories
 		for (var i = filesArr.length - 1; i >= 0; i--){
+
 			var gFile = filesArr[i];
 			var file = {};
 
 			//if it is a dir, add to fileHash
 			if(gFile.mimeType === 'application/vnd.google-apps.folder'){
 				fileHash[gFile.id] = '/' + gFile.title;
-				if(!gFile.parents[0].isRoot){
-					fileHash[gFile.id] = fileHash[gFile.parents[0].id] + '/' + gFile.title;
+				if(gFile.parents.length > 0){
+					if(!gFile.parents[0].isRoot){
+						fileHash[gFile.id] = fileHash[gFile.parents[0].id] + '/' + gFile.title;
+					}
 				}
 				file.files = [];
 				structureHash[fileHash[gFile.id]] = myfiles.length;
@@ -47,25 +51,34 @@ module.exports.getDriveFiles = function(accessToken) {
 			file.meta.gId =  gFile.id;
 			file.meta.rev = gFile.headRevisionId;
 			file.meta.thumb_exists = true;
-
-			file.meta.path = gFile.parents[0].isRoot ? '/' + file.name : fileHash[gFile.parents[0].id] + '/' + file.name;
+			if(gFile.parents.length > 0){
+				file.meta.path = gFile.parents[0].isRoot ? '/' + file.name : fileHash[gFile.parents[0].id] + '/' + file.name;
+				
+			} else {
+				file.meta.path = '/Google Shared/' + file.name;
+			}
 			file.meta.is_dir = gFile.mimeType === 'application/vnd.google-apps.folder' ? true : false;
 			file.meta.icon = gFile.thumbnailLink;
 			file.meta.read_only = !gFile.editable;
 			file.meta.modifier = null;
 			file.meta.bytes = gFile.fileSize;
 			file.meta.modified = gFile.modifiedDate;
-			file.meta.size = gFile.fileSize;
+			file.meta.size = filesize(Number(gFile.fileSize)).human({ jedec: true });
+			if(file.meta.size === 'NaN Bytes' && !file.meta.is_dir){
+				file.meta.size = 'REMOVE'
+			}
 
 			file.meta.root = 'drive';
 			file.meta.mime_type = gFile.mimeType;
 			file.meta.revision = gFile.version;
 
 			//push files in sequence
+
 			myfiles.push(file);
+	
 
 		}
-
+		//console.log('myfiles on drive', myfiles);
 		//iterate through sequential files, placing them back into proper directory depth structure
 		var results = [];
 		for(var j = 0; j < myfiles.length; j++){
@@ -74,17 +87,21 @@ module.exports.getDriveFiles = function(accessToken) {
 			if(res !== undefined){
 				myfiles[res].files.push(myfiles[j]);
 			} else {
+				if(myfiles[j].meta.size !== 'REMOVE'){
+
 				results.push(myfiles[j]);
+				}
 			}
 		}
-
+		//console.log(' my results are ', results);
 		return results;
 	}
 
 	return getFileList() 
 	.then(function(result) {
+		//console.log('google items is ', result[0].items);
 		var myGFiles = parseFiles(result[0].items);
-		console.log('postParse is', myGFiles);
+		//console.log('postParse is', myGFiles);
 		//need to pass myGFiles to appropriate place
 		return myGFiles;
 	});

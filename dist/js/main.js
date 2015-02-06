@@ -10,7 +10,7 @@ $(document).ready(function() {
 
   var render = function(cloudService) {
     React.render(
-      React.createElement(App, {cloudService: cloudService}),
+      App({cloudService: cloudService}),
       document.getElementById(cloudService)
     );
   }
@@ -26,7 +26,6 @@ $(document).ready(function() {
 
   
 });
-
 
 },{"./components/App.js":157,"react":155}],2:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
@@ -19839,7 +19838,6 @@ var AppActions = {
 
 module.exports = AppActions;
 
-
 },{"../constants/appConstants.js":167,"../dispatcher/appDispatcher.js":169}],157:[function(require,module,exports){
 /**
  * @jsx React.DOM
@@ -19848,10 +19846,10 @@ module.exports = AppActions;
 var React = require('react');
 var FileBrowser = require('./FileBrowser');
 var AppStore = require('../stores/AppStore');
+var Data = require('../data/test.js');
 var Actions = require('../actions/Actions');
 
-
-var App = React.createClass({displayName: "App",
+var App = React.createClass({displayName: 'App',
 
   //get the current data from the Store
   getAppState: function() {
@@ -19882,7 +19880,7 @@ var App = React.createClass({displayName: "App",
   //this is where we render the component itself, as well as any subcomponents, as well as passing in data to these subcomponents, where they will access it through this.props.variableName
   render: function() {
     return (
-      React.createElement(FileBrowser, {levels: this.state.levels, files: this.state.files, cloudService: this.props.cloudService})
+      FileBrowser({levels: this.state.levels, files: this.state.files, cloudService: this.props.cloudService})
     );
   },
 
@@ -19895,8 +19893,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-
-},{"../actions/Actions":156,"../stores/AppStore":171,"./FileBrowser":161,"react":155}],158:[function(require,module,exports){
+},{"../actions/Actions":156,"../data/test.js":168,"../stores/AppStore":171,"./FileBrowser":161,"react":155}],158:[function(require,module,exports){
 /**
  * @jsx React.DOM
  */
@@ -19904,7 +19901,7 @@ module.exports = App;
 var React = require('react');
 var fileUtil = require('../../utils/fileUtil.js');
 
-module.exports = React.createClass({displayName: "exports",
+module.exports = React.createClass({displayName: 'exports',
 
   render: function() {
     var file = this.props.file;
@@ -19912,17 +19909,16 @@ module.exports = React.createClass({displayName: "exports",
 
     if (size) {
       return (
-        React.createElement("td", null, size )
+        React.DOM.td(null, size )
       );
     } else {
       return (
-        React.createElement("td", null, " --- ")
+        React.DOM.td(null, " --- ")
       ); 
     }
   }
 
 });
-
 
 },{"../../utils/fileUtil.js":175,"react":155}],159:[function(require,module,exports){
 /**
@@ -19932,19 +19928,18 @@ module.exports = React.createClass({displayName: "exports",
 var React = require('react');
 var fileUtil = require('../../utils/fileUtil.js');
 
-module.exports = React.createClass({displayName: "exports",
+module.exports = React.createClass({displayName: 'exports',
 
   render: function() {
     var file = this.props.file;
 
     return (
-      React.createElement("td", null, " ",  fileUtil.fileType(file), " ")
+      React.DOM.td(null, " ",  fileUtil.fileType(file), " ")
     );
 
   }
 
 });
-
 
 
 
@@ -19960,7 +19955,7 @@ var fileUtil = require('../../utils/fileUtil.js');
 var IntlMixin     = ReactIntl.IntlMixin;
 var FormattedDate = ReactIntl.FormattedDate;
 
-module.exports = React.createClass({displayName: "exports",
+module.exports = React.createClass({displayName: 'exports',
 
   mixins: [IntlMixin],
 
@@ -19970,8 +19965,8 @@ module.exports = React.createClass({displayName: "exports",
 
     if (modified) {
       return (
-        React.createElement("td", null, 
-          React.createElement(FormattedDate, {
+        React.DOM.td(null, 
+          FormattedDate({
             value: modified, 
             day: "numeric", 
             month: "short", 
@@ -19980,13 +19975,12 @@ module.exports = React.createClass({displayName: "exports",
       );
     } else {
       return (
-        React.createElement("td", null, " --- ")
+        React.DOM.td(null, " --- ")
       ); 
     }
   }
 
 });
-
 
 },{"../../utils/fileUtil.js":175,"react":155}],161:[function(require,module,exports){
 /**
@@ -20001,7 +19995,7 @@ var Header = require('./Table/Header.js');
 var Data = require('../data/test.js');
 
 
-module.exports = React.createClass({displayName: "exports",
+module.exports = React.createClass({displayName: 'exports',
 
   showFiles: function() {
     var files = this.props.files;
@@ -20024,17 +20018,16 @@ module.exports = React.createClass({displayName: "exports",
     var files = this.showFiles();
 
     return (
-      React.createElement("div", {className: 'fileBrowser'}, 
-        React.createElement(Header, {levels:  this.props.levels, cloudService: this.props.cloudService}), 
-        React.createElement(Table, {hover: true}, 
-          React.createElement(TableHead, null), 
-          React.createElement(TableBody, {files: files, cloudService: this.props.cloudService})
+      React.DOM.div({className: 'fileBrowser'}, 
+        Header({levels:  this.props.levels, cloudService: this.props.cloudService}), 
+        Table({hover: true}, 
+          TableHead(null), 
+          TableBody({files: files, cloudService: this.props.cloudService})
         )
       )
     );
   }
 });
-
 
 
 
@@ -20046,7 +20039,7 @@ module.exports = React.createClass({displayName: "exports",
 var React = require('react');
 var Actions = require('../../actions/Actions');
 
-module.exports = React.createClass({displayName: "exports",
+module.exports = React.createClass({displayName: 'exports',
 
   handleClick: function(event) {
     event.preventDefault();
@@ -20062,18 +20055,17 @@ module.exports = React.createClass({displayName: "exports",
 
     var className = (index === levels.length - 1) ? 'active' : '';
     var content = (index !== levels.length - 1) ? 
-      React.createElement("a", {href: '#', onClick: this.handleClick}, " ", level, " ") :
-      React.createElement("span", null, level);
+      React.DOM.a({href: '#', onClick: this.handleClick}, " ", level, " ") :
+      React.DOM.span(null, level);
 
     return (
-        React.createElement("li", {className: className}, 
+        React.DOM.li({className: className}, 
         content
         )
     );
   }
 
 });
-
 },{"../../actions/Actions":156,"react":155}],163:[function(require,module,exports){
 /**
  * @jsx React.DOM
@@ -20082,7 +20074,7 @@ module.exports = React.createClass({displayName: "exports",
 var React = require('react');
 var BreadCrumb = require('./BreadCrumb');
 
-module.exports = React.createClass({displayName: "exports",
+module.exports = React.createClass({displayName: 'exports',
 
   render: function() {
 
@@ -20090,7 +20082,7 @@ module.exports = React.createClass({displayName: "exports",
     var cloudService = this.props.cloudService;
 
     this.props.levels.forEach(function(level, index, levels) {
-      breadCrumbs.push(React.createElement(BreadCrumb, {key: index, 
+      breadCrumbs.push(BreadCrumb({key: index, 
         level: level, 
         index: index, 
         levels: levels, 
@@ -20099,14 +20091,13 @@ module.exports = React.createClass({displayName: "exports",
     });
 
     return (
-      React.createElement("ol", {className: 'breadcrumb'}, 
+      React.DOM.ol({className: 'breadcrumb'}, 
         breadCrumbs
       )
     );
   }
 
 });
-
 },{"./BreadCrumb":162,"react":155}],164:[function(require,module,exports){
 /**
  * @jsx React.DOM
@@ -20115,7 +20106,7 @@ module.exports = React.createClass({displayName: "exports",
 var React = require('react');
 var TableRow = require('./TableRow.js');
 
-module.exports = React.createClass({displayName: "exports",
+module.exports = React.createClass({displayName: 'exports',
 
 
     render: function() {
@@ -20124,11 +20115,11 @@ module.exports = React.createClass({displayName: "exports",
       var cloudService = this.props.cloudService
 
       this.props.files.forEach(function(file) {
-        rows.push(React.createElement(TableRow, {key: file.meta.path, file: file, cloudService: cloudService}));
+        rows.push(TableRow({key: file.meta.path, file: file, cloudService: cloudService}));
       }.bind(this));
 
       return (
-        React.createElement("tbody", null, 
+        React.DOM.tbody(null, 
           rows
         )
       );
@@ -20138,7 +20129,6 @@ module.exports = React.createClass({displayName: "exports",
 
 
         
-
 },{"./TableRow.js":166,"react":155}],165:[function(require,module,exports){
 /**
  * @jsx React.DOM
@@ -20147,23 +20137,22 @@ module.exports = React.createClass({displayName: "exports",
 var React = require('react');
 var Table = require('react-bootstrap/Table');
 
-module.exports = React.createClass({displayName: "exports",
+module.exports = React.createClass({displayName: 'exports',
 
   render: function() {
     return (
-      React.createElement("thead", null, 
-        React.createElement("tr", null, 
-          React.createElement("th", null, "Name"), 
-          React.createElement("th", null, "Kind"), 
-          React.createElement("th", null, "Size"), 
-          React.createElement("th", null, "Modified")
+      React.DOM.thead(null, 
+        React.DOM.tr(null, 
+          React.DOM.th(null, "Name"), 
+          React.DOM.th(null, "Kind"), 
+          React.DOM.th(null, "Size"), 
+          React.DOM.th(null, "Modified")
         )
       )
     );
   }
 
 });
-
 
 
 
@@ -20182,7 +20171,7 @@ var Actions = require('../../actions/Actions');
 var IntlMixin     = ReactIntl.IntlMixin;
 var FormattedDate = ReactIntl.FormattedDate;
 
-module.exports = React.createClass({displayName: "exports",
+module.exports = React.createClass({displayName: 'exports',
 
   mixins: [IntlMixin],
 
@@ -20199,22 +20188,21 @@ module.exports = React.createClass({displayName: "exports",
     var file = this.props.file;
     var icon = 'img/icons/' + fileUtil.icon(file);
     return (
-        React.createElement("tr", null, 
-          React.createElement("td", null, 
-            React.createElement("a", {href: '#', onClick: this.handleClick}, 
-              React.createElement("img", {src: icon, className: 'icon'}), 
+        React.DOM.tr(null, 
+          React.DOM.td(null, 
+            React.DOM.a({href: '#', onClick: this.handleClick}, 
+              React.DOM.img({src: icon, className: 'icon'}), 
                file.name
             )
           ), 
-          React.createElement(FileType, {file: file}), 
-          React.createElement(FileSize, {file: file}), 
-          React.createElement(Modified, {file: file})
+          FileType({file: file}), 
+          FileSize({file: file}), 
+          Modified({file: file})
         )
     );
   }
 
 });
-
 
 },{"../../actions/Actions":156,"../../utils/fileUtil.js":175,"../File/FileSize.js":158,"../File/FileType.js":159,"../File/Modified.js":160,"react":155}],167:[function(require,module,exports){
 var keyMirror = require('keymirror');
@@ -20224,7 +20212,6 @@ module.exports = keyMirror({
   UPDATE_HIERARCHY: null,
   ENTER_FOLDER: null
 });
-
 
 },{"keymirror":5}],168:[function(require,module,exports){
 var rawData = {
@@ -20503,7 +20490,6 @@ module.exports = rawData;
 
 
 
-
 },{}],169:[function(require,module,exports){
 /**
  * @jsx React.DOM
@@ -20524,7 +20510,6 @@ var AppDispatcher = assign({}, Dispatcher.prototype, {
 });
 
 module.exports = AppDispatcher;
-
 
 },{"./dispatcher.js":170,"object-assign":6}],170:[function(require,module,exports){
 // The GENERAL Dispatcher (boilerplate)
@@ -20593,7 +20578,6 @@ Dispatcher.prototype = assign({}, Dispatcher.prototype, {
 
 module.exports = Dispatcher;
 
-
 },{"es6-promise":4,"object-assign":6}],171:[function(require,module,exports){
 /**
  * @jsx React.DOM
@@ -20608,8 +20592,6 @@ var CHANGE_EVENT = 'change';
 
 var _files = {};
 var _levels = {};
-
-
 
 var updateLevels = function(levels, cloudService) {
   _levels[cloudService] = levels;
@@ -20678,7 +20660,6 @@ var AppStore = assign({}, EventEmitter.prototype, {
 
 module.exports = AppStore;
 
-
 },{"../constants/appConstants":167,"../dispatcher/appDispatcher":169,"events":2,"object-assign":6}],172:[function(require,module,exports){
 var fileModified = function (file) {
   
@@ -20689,7 +20670,6 @@ var fileModified = function (file) {
 }
 
 module.exports = fileModified;
-
 },{}],173:[function(require,module,exports){
 var FormattedDate = ReactIntl.FormattedDate;
 
@@ -20702,7 +20682,6 @@ var fileSize = function (file) {
 }
 
 module.exports = fileSize;
-
 },{}],174:[function(require,module,exports){
 var mimeTypes = {
   'application/zip': 'archive',
@@ -20749,13 +20728,11 @@ var fileType = function (file) {
 }
 
 module.exports = fileType;
-
 },{}],175:[function(require,module,exports){
 module.exports.fileType = require('./fileType.js');
 module.exports.fileSize = require('./fileSize.js');
 module.exports.modified = require('./fileModified.js');
 module.exports.icon = require('./icon.js');
-
 },{"./fileModified.js":172,"./fileSize.js":173,"./fileType.js":174,"./icon.js":176}],176:[function(require,module,exports){
 var fileType = require('./fileType.js');
 
@@ -20772,7 +20749,6 @@ var icons = {
 module.exports = function (file) {
   return icons[fileType(file)] || 'Document_Blank.png';
 }
-
 
 
 },{"./fileType.js":174}]},{},[1]);
