@@ -30,6 +30,8 @@ driveAPI.getDriveFiles = function(accessToken) {
 		var level = myfiles;
 		var dirLevel = filesArr[filesArr.length -1].parents[0].id;
 
+		//console.log(filesArr);
+
 		//reverse order to start with nested directories
 		for (var i = filesArr.length - 1; i >= 0; i--){
 
@@ -69,7 +71,7 @@ driveAPI.getDriveFiles = function(accessToken) {
 			if(file.meta.size === 'NaN Bytes' && !file.meta.is_dir){
 				file.meta.size = 'REMOVE'
 			}
-
+			file.meta.downloadLink = gFile.webContentLink;
 			file.meta.root = 'drive';
 			file.meta.mime_type = gFile.mimeType;
 			file.meta.revision = gFile.version;
