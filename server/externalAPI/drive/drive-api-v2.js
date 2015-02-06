@@ -58,7 +58,7 @@ module.exports.getDriveFiles = function(accessToken) {
 			file.meta.size = gFile.fileSize;
 
 			file.meta.root = 'drive';
-			file.meta.mimeType = gFile.mimeType;
+			file.meta.mime_type = gFile.mimeType;
 			file.meta.revision = gFile.version;
 
 			//push files in sequence

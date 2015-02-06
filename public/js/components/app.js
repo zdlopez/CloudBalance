@@ -1,8 +1,9 @@
 /*** @jsx React.DOM */
 var React = require('react');
-var FileBrowser = require('./FileBrowser.js');
-var AppStore = require('../stores/AppStore.js')
+var FileBrowser = require('./FileBrowser');
+var AppStore = require('../stores/AppStore');
 var Data = require('../data/test.js');
+var Actions = require('../actions/Actions');
 
 var App = React.createClass({
 
@@ -10,7 +11,7 @@ var App = React.createClass({
   getAppState: function() {
     return {
       // files: AppStore.getFiles(this.props.cloudService),
-      files: Data.files,
+      files: AppStore.getFiles(this.props.cloudService),
       levels: AppStore.getLevels(this.props.cloudService) 
     };
   },
@@ -25,6 +26,7 @@ var App = React.createClass({
   //register an event listener with the store once the component has been successfully rendered/mounted on the page
   componentDidMount: function() {
     AppStore.addChangeListener(this._onChange);
+    Actions.getAllFiles(this.props.cloudService);
   },
 
   componentWillUnmount: function() {

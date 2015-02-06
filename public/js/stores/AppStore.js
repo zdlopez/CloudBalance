@@ -16,6 +16,10 @@ var enterFolder = function(folderName, cloudService) {
   _levels[cloudService].push(folderName);
 }
 
+var updateFiles = function(files, cloudService) {
+  _files[cloudService] = files;
+}
+
 var AppStore = assign({}, EventEmitter.prototype, {
 
   initialize: function(cloudService) {
@@ -55,6 +59,10 @@ var AppStore = assign({}, EventEmitter.prototype, {
 
       case AppConstants.ENTER_FOLDER:
         enterFolder(action.folderName, action.cloudService);
+        break;
+
+      case AppConstants.UPDATE_FILES:
+        updateFiles(action.files, action.cloudService);
         break;
 
     }

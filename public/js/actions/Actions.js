@@ -19,7 +19,35 @@ var AppActions = {
       folderName: folderName,
       cloudService: cloudService
     })
+  },
+
+  getAllFiles: function(cloudService) {
+    var urls = {
+      'Dropbox': 'api/1/getDropboxFiles',
+      'Google': 'api/1/getDriveFiles'
+    }
+
+    $.ajax({
+      url: urls[cloudService],
+      headers: {
+        'driveToken': sessionStorage.getItem('driveToken'),
+        'dropboxToken' : sessionStorage.getItem('dropboxToken')
+      },
+      dataType: 'json',
+      type: 'GET',
+      success: function(data) {
+        AppDispatcher.handleViewAction({
+          actionType: AppConstants.UPDATE_FILES,
+          files: data,
+          cloudService: cloudService
+        })
+      },
+      error: function(xhr, status, err) {
+        console.error('api/1/getAllFiles', status, err.toString());
+      }
+    });   
   }
+
 
 };
 

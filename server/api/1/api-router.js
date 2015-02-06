@@ -38,13 +38,14 @@ apiRouter.get('/getDropboxFiles', function(req, res) {
 apiRouter.get('/getDriveFiles', function(req, res) {
   var fileDirectories = {};
 
+
   driveAPI.getDriveFiles(req.tokens.drive)
     .then(function(data) {
       fileDirectories = data;
       res.set('Content-Type', 'application/json')
       .status(200).end(JSON.stringify(fileDirectories));
       }
-    });
+    );
 
 });
 
