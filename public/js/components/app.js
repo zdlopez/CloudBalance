@@ -1,4 +1,7 @@
-/*** @jsx React.DOM */
+/**
+ * @jsx React.DOM
+ */
+
 var React = require('react');
 var FileBrowser = require('./FileBrowser');
 var AppStore = require('../stores/AppStore');

@@ -1,3 +1,7 @@
+/**
+ * @jsx React.DOM
+ */
+
 var React = require('react');
 var fileUtil = require('../../utils/fileUtil.js');
 var FileType = require('../File/FileType.js');
