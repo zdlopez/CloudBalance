@@ -20,16 +20,31 @@ apiRouter.all('*', function(req, res, next) {
   next();
 });
 
+
+
 apiRouter.get('/getDropboxFiles', function(req, res) {
   var fileDirectories = {};
 
   dropboxAPI.getDelta('/', req.tokens.dropbox)
   .then(function(data) {
-    fileDirectories.dropbox = data;
+    fileDirectories = data;
 
     res.set('Content-Type', 'application/json')
     .status(200).end(JSON.stringify(fileDirectories));
   });
+
+});
+
+apiRouter.get('/getDriveFiles', function(req, res) {
+  var fileDirectories = {};
+
+  driveAPI.getDriveFiles(req.tokens.drive)
+    .then(function(data) {
+      fileDirectories = data;
+      res.set('Content-Type', 'application/json')
+      .status(200).end(JSON.stringify(fileDirectories));
+      }
+    });
 
 });
 
