@@ -19841,7 +19841,10 @@ module.exports = AppActions;
 
 
 },{"../constants/appConstants.js":167,"../dispatcher/appDispatcher.js":169}],157:[function(require,module,exports){
-/*** @jsx React.DOM */
+/**
+ * @jsx React.DOM
+ */
+
 var React = require('react');
 var FileBrowser = require('./FileBrowser');
 var AppStore = require('../stores/AppStore');
@@ -19894,6 +19897,10 @@ module.exports = App;
 
 
 },{"../actions/Actions":156,"../data/test.js":168,"../stores/AppStore":171,"./FileBrowser":161,"react":155}],158:[function(require,module,exports){
+/**
+ * @jsx React.DOM
+ */
+
 var React = require('react');
 var fileUtil = require('../../utils/fileUtil.js');
 
@@ -19918,6 +19925,10 @@ module.exports = React.createClass({displayName: "exports",
 
 
 },{"../../utils/fileUtil.js":175,"react":155}],159:[function(require,module,exports){
+/**
+ * @jsx React.DOM
+ */
+
 var React = require('react');
 var fileUtil = require('../../utils/fileUtil.js');
 
@@ -19939,6 +19950,10 @@ module.exports = React.createClass({displayName: "exports",
 
 
 },{"../../utils/fileUtil.js":175,"react":155}],160:[function(require,module,exports){
+/**
+ * @jsx React.DOM
+ */
+
 var React = require('react');
 var fileUtil = require('../../utils/fileUtil.js');
 
@@ -19974,6 +19989,10 @@ module.exports = React.createClass({displayName: "exports",
 
 
 },{"../../utils/fileUtil.js":175,"react":155}],161:[function(require,module,exports){
+/**
+ * @jsx React.DOM
+ */
+
 var React = require('react');
 var Table = require('react-bootstrap/Table');
 var TableHead = require('./Table/TableHead.js');
@@ -20020,6 +20039,10 @@ module.exports = React.createClass({displayName: "exports",
 
 
 },{"../data/test.js":168,"./Table/Header.js":163,"./Table/TableBody.js":164,"./Table/TableHead.js":165,"react":155,"react-bootstrap/Table":7}],162:[function(require,module,exports){
+/**
+ * @jsx React.DOM
+ */
+
 var React = require('react');
 var Actions = require('../../actions/Actions');
 
@@ -20052,6 +20075,10 @@ module.exports = React.createClass({displayName: "exports",
 });
 
 },{"../../actions/Actions":156,"react":155}],163:[function(require,module,exports){
+/**
+ * @jsx React.DOM
+ */
+
 var React = require('react');
 var BreadCrumb = require('./BreadCrumb');
 
@@ -20081,6 +20108,10 @@ module.exports = React.createClass({displayName: "exports",
 });
 
 },{"./BreadCrumb":162,"react":155}],164:[function(require,module,exports){
+/**
+ * @jsx React.DOM
+ */
+
 var React = require('react');
 var TableRow = require('./TableRow.js');
 
@@ -20109,6 +20140,10 @@ module.exports = React.createClass({displayName: "exports",
         
 
 },{"./TableRow.js":166,"react":155}],165:[function(require,module,exports){
+/**
+ * @jsx React.DOM
+ */
+
 var React = require('react');
 var Table = require('react-bootstrap/Table');
 
@@ -20133,6 +20168,10 @@ module.exports = React.createClass({displayName: "exports",
 
 
 },{"react":155,"react-bootstrap/Table":7}],166:[function(require,module,exports){
+/**
+ * @jsx React.DOM
+ */
+
 var React = require('react');
 var fileUtil = require('../../utils/fileUtil.js');
 var FileType = require('../File/FileType.js');
@@ -20466,6 +20505,10 @@ module.exports = rawData;
 
 
 },{}],169:[function(require,module,exports){
+/**
+ * @jsx React.DOM
+ */
+
 var Dispatcher = require('./dispatcher.js');
 var assign = require('object-assign');
 
@@ -20552,6 +20595,10 @@ module.exports = Dispatcher;
 
 
 },{"es6-promise":4,"object-assign":6}],171:[function(require,module,exports){
+/**
+ * @jsx React.DOM
+ */
+
 var AppDispatcher = require('../dispatcher/appDispatcher');
 var AppConstants = require('../constants/appConstants');
 var assign = require('object-assign');

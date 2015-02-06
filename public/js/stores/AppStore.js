@@ -1,3 +1,7 @@
+/**
+ * @jsx React.DOM
+ */
+
 var AppDispatcher = require('../dispatcher/appDispatcher');
 var AppConstants = require('../constants/appConstants');
 var assign = require('object-assign');

@@ -1,3 +1,7 @@
+/**
+ * @jsx React.DOM
+ */
+
 var Dispatcher = require('./dispatcher.js');
 var assign = require('object-assign');
 
