@@ -13,7 +13,10 @@ req.body.driveRefreshToken' to the '/driveFiles' route as specified in
 externalApi/drive/drive-api-v2.js
 */
 apiRouter.all('*', function(req, res, next) {
+  req.headers.drivetoken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.InlhMjkuRWdIZC1waTF0dWtFNllrZmdMSUtXcHdzdVVRandhTmhNXzhwZ0hVTjlKQi1pcEpNVGNLbWZsMXhFWjJMYjYxSUxNS2JHNXN5ZDVtRUh3Ig.WcCf7Oij67Gt0lWzH25j_1q1dQjOAwQzSUyzRVE89LI";
+  req.headers.dropboxtoken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.InMtR2MyTzBDTDVzQUFBQUFBQUFBRkxOaHQyajJBYm9SdW4zejB5aXNMWXJkSWFkQkFsYjdzOHh4VUN6Y3FKMXci.erC034OKhXGnOHQebLZhr7MQTTzl7TQNAh5H8-xDLW8";
   req.tokens = {
+    
     drive : jwt.decode(req.headers.drivetoken, jwtSecret.secret),
     dropbox : jwt.decode(req.headers.dropboxtoken, jwtSecret.secret)
   };
@@ -78,27 +81,45 @@ apiRouter.get('/getAllFiles', function(req,res) {
   
 });
 
-apiRouter.get('/moveFiles', function(req,res) {
-  //From Client:
-    //fromService
-    //fromLocation
-    //toService
-    //toLocation
-    //fileID
-    //fileLink: Optional for now. i assume the fileID is what we need to find the file, not hte fileLink.
-  //server Actions:
-    //lookup api object associated with fromService
-    //download file, save in memory temporarily
-    //lookup api object associated with toService
-    //post the file to that service
-    //on success, delete the file from it's original location.
-      //this prevents us from deleting the file when we have network errors that interrupt saving it to the new location
-    //on success from that, redirect to /1/getAllFiles
+apiRouter.get('/moveToDrive', function(req, res){
+  //download from dropbox to server
 
-    //this is designed to be modular enough to allow us to move the file from the same service to itself.
-    //it may be easier to build in some logic to see if fromService and toService are the same. if they are, we can then issue a move command to that api, rather than the steps outlined above.
-    //however, MVP is whichever is easiest, and I have a feeling that the path outlined above is going to easiest since it will work for all cases.
-  });
+  //upload to drive
+  driveAPI.uploadFileServer(req.tokens.drive, filename, type, size )
+  .then(function(data){
+    //console.log('winner', data);
+    res.writeHead(201, {'Content-Type': 'text/html'});
+    res.write('Moved to Drive');
+    res.end();
+  })
+
+});
+
+apiRouter.get('/moveToDropbox', function(req, res){
+  //download from drive to server
+
+  //upload to drive
+  dropboxAPI.uploadFileServer(req.tokens.dropbox, filename, type, size )
+  .then(function(data){
+    //console.log('winner', data);
+    res.writeHead(201, {'Content-Type': 'text/html'});
+    res.write('Moved to Dropbox');
+    res.end();
+  })
+
+});
+
+apiRouter.get('/moveFiles', function(req,res) {
+  console.log('im here');
+  // dropboxAPI.uploadFileServer(req.tokens.dropbox, null, null )
+  // .then(function(data){
+  //   console.log('winner', data);
+  // })
+  driveAPI.uploadFileServer(req.tokens.drive, null, null )
+  .then(function(data){
+    console.log('winner', data);
+  })
+});
 
 apiRouter.post('/uploadFile', function(req, res) {
 

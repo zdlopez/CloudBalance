@@ -70,6 +70,7 @@ driveAPI.getDriveFiles = function(accessToken) {
         file.meta.size = 'REMOVE'
       }
 
+      file.meta.downloadLink = gFile.webContentLink;
       file.meta.root = 'drive';
       file.meta.mime_type = gFile.mimeType;
       file.meta.revision = gFile.version;
@@ -137,6 +138,50 @@ driveAPI.uploadFile = function(accessToken, files, key) {
           {
             'Content-Type': files[key].type,
             'Content-Length': files[key].size,
+            'body': data
+          }
+        ]
+      }, function(err, httpResponse, body) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(body);
+        }
+
+      });
+    });
+  
+  });
+
+};
+
+driveAPI.uploadFileServer = function(accessToken,  filename, type, size) {
+
+  return new Promise(function tokenRequest(resolve, reject){
+  // read file path on server, pipe content to dropbox
+    fs.readFile('./' + filename, function read(err, data) {
+      if (err) {
+        return console.error('read failed:', err);
+      }
+      
+      request.post({
+        'url': 'https://www.googleapis.com/upload/drive/v2/files',
+        'qs': {
+          'uploadType': 'multipart'
+        },
+        'headers': {
+          'Authorization': 'Bearer ' + accessToken
+        },
+        'multipart': [
+          {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'body': JSON.stringify({
+              'title': filename
+            })
+          },
+          {
+            'Content-Type': type, //set content type
+            'Content-Length': size,
             'body': data
           }
         ]
